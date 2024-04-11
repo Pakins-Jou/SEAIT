@@ -1,0 +1,9 @@
+logs 
+node_modules
+__pycache__
+flask_session
+venv 
+proxy.txt 
+config/configuration.json 
+run.cmd 
+run.ps1 
