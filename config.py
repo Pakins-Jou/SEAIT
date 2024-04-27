@@ -11,7 +11,7 @@ cpanel = None
 
 
 basedir = path.abspath(path.dirname(__file__))
-file_path   = None
+file_path = None
 config_path = None
 cpanel_path = None
 if environ.get("FLASK_ENV") == "development":
@@ -76,8 +76,7 @@ class Config(object):
     REDIS_URL = get_configured_value("REDIS_URL", configuration["REDIS_URL"])
     RQ_DASHBOARD_REDIS_URL = REDIS_URL
 
-
-    if SESSION_TYPE=="redis":
+    if SESSION_TYPE == "redis":
         SESSION_REDIS = redis.from_url(REDIS_URL)
     LOG_TO_STDOUT = get_configured_value(
         "LOG_TO_STDOUT", configuration["MONGODB_CONNECT"]
