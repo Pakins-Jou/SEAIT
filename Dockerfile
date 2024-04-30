@@ -43,12 +43,12 @@ RUN  mkdir -p "/opt/seait/app"  &&  mkdir -p "opt/seait/settings" &&  apk update
    libc-dev 
 
 COPY [".flaskenv","./config.py","./seait.py","./seait.py","./Procfile","./redis_worker.py","./requirements.txt", "/opt/seait/"]
-COPY ["./settings","/opt/seait/settings"]
 COPY ["./app",  "/opt/seait/app"]
-#RUN rm -rf /opt/seait/app/static
-#COPY ["./app/static/cpanel","/opt/seait/app/static/cpanel"]
-#COPY ["./app/static/*.png","/opt/seait/app/static/"]
-#COPY ["./app/static/*.css","/opt/seait/app/static/"]
+COPY ["./default_settings","/opt/seait/settings"]
+
+#RUN rm -rf ./opt/seait/app/static && rm -rf ./opt/seait/app/template
+#COPY ["./app/static","/opt/seait/app/static"]
+#COPY ["./app/templates",  "/opt/seait/app/templates"]
 RUN  python -m pip install --upgrade pip &&  python -m pip install -r  /opt/seait/requirements.txt && apk add bash 
 COPY [ "./overrides/json.py", "/usr/local/lib/python3.12/site-packages/flask_mongoengine/"]
 WORKDIR /opt/seait
