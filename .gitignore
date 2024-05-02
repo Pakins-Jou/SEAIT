@@ -9,3 +9,4 @@ run.ps1
 heroku_deploy.ps1
 .vscode 
 docker_build_prod.ps1
+export_atlas_data.ps1

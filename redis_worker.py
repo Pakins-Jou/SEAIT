@@ -4,10 +4,8 @@ from config import Config
 from datetime import datetime
 from app import create_app
 
-app = create_app()
+app = create_app(is_redis=True)
 app.app_context().push()
-print(Config.REDIS_URL)
-print(Config.REDIS_QUEUE_NAME)
 
 redis = Redis.from_url(Config.REDIS_URL)
 queue = Queue(Config.REDIS_QUEUE_NAME, connection=redis)
