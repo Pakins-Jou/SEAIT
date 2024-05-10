@@ -53,5 +53,5 @@ RUN  python -m pip install --upgrade pip &&  python -m pip install -r  /opt/seai
 COPY [ "./overrides/json.py", "/usr/local/lib/python3.12/site-packages/flask_mongoengine/"]
 #COPY [ "./venv/Lib/site-packages/flask_mongoengine/json.py", "/usr/local/lib/python3.12/site-packages/flask_mongoengine/"]
 WORKDIR /opt/seait
-EXPOSE $PORT 6379 443 80
+EXPOSE $PORT 6379 443 80 5000
 CMD python redis_worker.py & gunicorn -w 2 -b 0.0.0.0:$PORT  'seait:app' 
