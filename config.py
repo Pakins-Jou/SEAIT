@@ -4,17 +4,36 @@ from os.path import exists
 from dotenv import load_dotenv
 import json, os
 import redis
+import socket
+
+default_docker_address =  "kubernetes.docker.internal"
+
+ip_address = socket.gethostbyname(socket.gethostname())
+ip_address = (
+    ip_address
+    if ip_address
+    and ip_address not in ["127.0.0.1", "0.0.0.0"]
+    and not (
+        ip_address.startswith("172.16")
+        or ip_address.startswith("172.17")
+        or ip_address.startswith("172.18")
+        or ip_address.startswith("172.19")
+        or ip_address.startswith("172.20")
+        or ip_address.startswith("127")
+    )
+    else default_docker_address
+)
 
 configuration = None
 components = None
 cpanel = None
 
-
 basedir = path.abspath(path.dirname(__file__))
 file_path = None
 config_path = None
 cpanel_path = None
-if environ.get("FLASK_ENV") == "development":
+
+if environ.get("FLASK_ENV") == "production":
     file_path = path.join(basedir, "default_settings/configuration.json")
     config_path = path.join(basedir, "default_settings/components.json")
     cpanel_path = path.join(basedir, "default_settings/cpanel.json")
@@ -74,6 +93,13 @@ class Config(object):
     )  # ,'redis')  filesystem - Note that the session_type configuration is case sensitive
 
     REDIS_URL = get_configured_value("REDIS_URL", configuration["REDIS_URL"])
+    REDIS_URL = (
+        REDIS_URL.replace("//redis", f"//{ip_address}").replace(
+            "//localhost", f"//{ip_address}"
+        )
+        if ip_address and ("//redis" in REDIS_URL or "//localhost" in REDIS_URL)
+        else REDIS_URL
+    )
     RQ_DASHBOARD_REDIS_URL = REDIS_URL
 
     if SESSION_TYPE == "redis":
@@ -111,6 +137,11 @@ class Config(object):
     )
     MONGODB_DB = get_configured_value("MONGODB_DB", configuration["MONGODB_DB"])
     MONGODB_HOST = get_configured_value("MONGODB_HOST", configuration["MONGODB_HOST"])
+    MONGODB_HOST = (
+        ip_address
+        if ip_address and MONGODB_HOST in ["db", "localhost"]
+        else MONGODB_HOST
+    )
     MONGODB_PORT = get_configured_value("MONGODB_PORT", configuration["MONGODB_PORT"])
     MONGODB_USERNAME = get_configured_value(
         "MONGODB_USERNAME", configuration["MONGODB_USERNAME"]
@@ -131,6 +162,13 @@ class Config(object):
         "MONGODB_AUTH_MECHANISM", configuration["MONGODB_AUTH_MECHANISM"]
     )
     MONGODB_URL = get_configured_value("MONGODB_URL", configuration["MONGODB_URL"])
+    MONGODB_URL = (
+        MONGODB_URL.replace("@db", f"@{ip_address}").replace(
+            "@localhost", f"@{ip_address}"
+        )
+        if ip_address and ("@db" in MONGODB_URL or "@localhost" in MONGODB_URL)
+        else MONGODB_URL
+    )
     UPLOAD_EXTENSIONS = get_configured_value(
         "UPLOAD_EXTENSIONS", configuration["UPLOAD_EXTENSIONS"]
     )

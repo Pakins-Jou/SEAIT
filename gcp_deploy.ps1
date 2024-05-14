@@ -1,5 +1,5 @@
 param(
-    [Parameter(Mandatory=$True, Position=0, ValueFromPipelineByPropertyName =$true)][string]$projectName
+    [Parameter(Mandatory=$False, Position=0, ValueFromPipelineByPropertyName =$true)][string]$projectName
     ,[Parameter(Mandatory=$False, Position=1, ValueFromPipelineByPropertyName =$true)][string]$projectID
     ,[Parameter(Mandatory=$False, Position=2, ValueFromPipelineByPropertyName =$true)][boolean]$createProject=$False
     ,[Parameter(Mandatory=$False, Position=3, ValueFromPipelineByPropertyName =$true)][boolean]$init=$False
@@ -27,12 +27,12 @@ function Run-Command {
 
  if($interactive -eq $true){
 
-    $cmdPrefix   =  "docker exec -it $gcloudContainerName "
-   start-process -filepath "powershell.exe" -argumentList @($cmdPrefix, $command) -WindowStyle Maximized -wait
- }else{
-    $cmdPrefix   =  "docker exec $gcloudContainerName "
+        $cmdPrefix   =  "docker exec -it $gcloudContainerName "
+        start-process -filepath "powershell.exe" -argumentList @($cmdPrefix, $command) -WindowStyle Maximized -wait
 
-    "$cmdPrefix $command" | cmd 
+}else{
+        $cmdPrefix   =  "docker exec $gcloudContainerName "
+        "$cmdPrefix $command" | cmd 
 
  }
  
