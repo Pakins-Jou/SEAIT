@@ -85,11 +85,15 @@ if ($listProjects -eq $True) {
 
 }
 if ($listBillingAc -eq $True) {
+    $command = "gcloud services enable cloudbuild.googleapis.com"
+    Run-Command $command
     $command = "gcloud --quiet beta billing accounts list"
     Run-Command $command
 }
 
 if ($linkBillingAc -eq $True) {
+    $command = "gcloud services enable cloudbuild.googleapis.com"
+    Run-Command $command
     $command = "gcloud beta billing projects link $projectID --billing-account=$($billingAccount)"
     Run-Command $command 
 }
